@@ -36,7 +36,7 @@ class _VisualizerState extends State<Visualizer> {
     99,
     100,
   ];
-  int binarySerachResult = 0;
+  int binarySearchResult = 0;
   Random randomGenerator = Random();
   int tempRanNum = 0;
 
@@ -54,12 +54,12 @@ class _VisualizerState extends State<Visualizer> {
           trailing: CircleAvatar(
             radius: 24,
             backgroundColor:
-                binarySerachResult == -1 ? Colors.blueGrey : Colors.amber,
+                binarySearchResult == -1 ? Colors.blueGrey : Colors.amber,
             child: Text(
-              '$binarySerachResult',
+              '$binarySearchResult',
               style: TextStyle(
                   color:
-                      binarySerachResult == -1 ? Colors.white : Colors.black),
+                      binarySearchResult == -1 ? Colors.white : Colors.black),
             ),
           ),
           leading: Text(
@@ -74,7 +74,7 @@ class _VisualizerState extends State<Visualizer> {
             itemCount: numArray.length != null ? numArray.length : 0,
             itemBuilder: (context, index) {
               return Padding(
-                padding: index == binarySerachResult
+                padding: index == binarySearchResult
                     ? const EdgeInsets.all(0)
                     : const EdgeInsets.all(6),
                 child: Row(
@@ -82,11 +82,11 @@ class _VisualizerState extends State<Visualizer> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      switchPointer(index, binarySerachResult),
+                      switchPointer(index, binarySearchResult),
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: switchPointerColor(index, binarySerachResult)),
+                          color: switchPointerColor(index, binarySearchResult)),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,13 +97,13 @@ class _VisualizerState extends State<Visualizer> {
                           height: size.height * 0.04,
                           duration: Duration(milliseconds: 300),
                           decoration: BoxDecoration(
-                              border: index == binarySerachResult
+                              border: index == binarySearchResult
                                   ? Border.all(color: Colors.white, width: 3)
                                   : Border.all(
                                       width: 0, color: Colors.transparent),
                               color:
-                                  switchDefaultColor(index, binarySerachResult),
-                              borderRadius: index == binarySerachResult
+                                  switchDefaultColor(index, binarySearchResult),
+                              borderRadius: index == binarySearchResult
                                   ? BorderRadius.circular(8)
                                   : BorderRadius.circular(0)),
                           child: Center(
@@ -111,14 +111,14 @@ class _VisualizerState extends State<Visualizer> {
                             '${numArray[index]}',
                             style: TextStyle(
                                 color:
-                                    changeTextColor(index, binarySerachResult),
+                                    changeTextColor(index, binarySearchResult),
                                 fontSize:
-                                    index == binarySerachResult ? 14 : 10),
+                                    index == binarySearchResult ? 14 : 10),
                           )),
                         ),
                         Text('$index',
                             style: TextStyle(
-                                color: index == binarySerachResult
+                                color: index == binarySearchResult
                                     ? Colors.black
                                     : Colors.white))
                       ],
@@ -143,7 +143,7 @@ class _VisualizerState extends State<Visualizer> {
               Text('Right Pointer: ${BinarySearch.rightPointer}\n',
                   style: TextStyle(fontSize: 16)),
               Text(
-                  'MidPoint: ${(BinarySearch.leftPointer + BinarySearch.rightPointer) ~/ 2.floor()}\n',
+                  'MidPoint: ${(BinarySearch.leftPointer + BinarySearch.rightPointer) ~/ 2}\n',
                   style: TextStyle(fontSize: 16)),
               Text('Return -1 if L > R, value not found.',
                   style: TextStyle(fontSize: 16)),
@@ -158,7 +158,7 @@ class _VisualizerState extends State<Visualizer> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Visualize',
+                  'Start',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
@@ -166,7 +166,7 @@ class _VisualizerState extends State<Visualizer> {
             onTap: () {
               setState(() {
                 tempRanNum = randomGenerator.nextInt(101);
-                binarySerachResult = _binarySearch.binarySearch(
+                binarySearchResult = _binarySearch.binarySearch(
                     numArray, tempRanNum, left, right);
               });
             }),
@@ -196,7 +196,7 @@ String switchPointer(int index, int resultValue) {
   if (index == BinarySearch.leftPointer) {
     // we only want to display the leftpointer[L],only if the control point [index]
     //is equal to the leftPointer[L] in the BinarySearch class itself.
-    //doing so will only display the leftPointer[L] that is appropriate to (midPoint + 1) in the BinarySearch class.
+    //doing so will only display the leftPointer[L] that is appropriate to (midPoint + 1).
     //otherwise if we compare it to the resultValue all numbers to the left will have a leftPointer[L].
 
     return 'L ';
@@ -209,7 +209,7 @@ String switchPointer(int index, int resultValue) {
     return 'M ';
   }
   //leave as is to only display L,M,R pointers,whatever character is passed here will be displayed
-  //at each condition that isnt met above.
+  //at each index where condition isnt met above.
   return '';
 }
 
@@ -228,20 +228,20 @@ Color switchPointerColor(int index, int resultValue) {
 
 //The following method is simply for customization for the container background color,
 //refer to the comments above to understand the logic lines 190-209.
-Color switchDefaultColor(int index, int resutValue) {
-  if (resutValue == -1) {
-    // value we're searching for  doesnt exist in our array.
+Color switchDefaultColor(int index, int resultValue) {
+  if (resultValue == -1) {
+    // if value we're searching for doesn't exist in our array.
     return Colors.blueGrey;
-  } else if (index > resutValue) {
+  } else if (index > resultValue) {
     //the upperbounds of the array will be red
-    //the indices to the right of our result/midpoint value is greater.
+    //the indices to the right of our result/midpoint values is greater.
     return Colors.blue;
-  } else if (index < resutValue) {
+  } else if (index < resultValue) {
     //the lowerbounds of the array will be black
-    //the indices to the left of our result/midpoint value is smaller.
+    //the indices to the left of our result/midpoint values is smaller.
     return Colors.black;
-  } else if (index == resutValue) {
-    //highlight the index and value in our array if it exist.
+  } else if (index == resultValue) {
+    //highlight the index and value in our array if it exists.
     return Colors.amber;
   }
   //does nothing.
