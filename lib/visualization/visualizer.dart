@@ -84,7 +84,7 @@ class _VisualizerState extends State<Visualizer> {
                     Text(
                       switchPointer(index, binarySearchResult),
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: switchPointerColor(index, binarySearchResult)),
                     ),
@@ -193,20 +193,24 @@ String switchPointer(int index, int resultValue) {
   //the index value is from the gridView itself, consider that our control point
   //the resultValue is the value thats returned from the binarySearch impl
 
-  if (index == BinarySearch.leftPointer) {
+  if (index == BinarySearch.leftPointer && index != resultValue) {
     // we only want to display the leftpointer[L],only if the control point [index]
     //is equal to the leftPointer[L] in the BinarySearch class itself.
     //doing so will only display the leftPointer[L] that is appropriate to (midPoint + 1).
     //otherwise if we compare it to the resultValue all numbers to the left will have a leftPointer[L].
 
     return 'L ';
-  } else if (index == BinarySearch.rightPointer) {
+  } else if (index == BinarySearch.rightPointer && index != resultValue) {
     //our control point [index] is now compared to the rightPointer[R] in the BinarySearch class [mid - 1]
     //everything is the same as above, only this time we're checking for the rightPointer[R]
     return 'R ';
-  } else if (index == resultValue) {
+  } else if (index == resultValue && index != BinarySearch.rightPointer) {
     //if the control point and resultValue are the same we've found our value
     return 'M ';
+  } else if (index == BinarySearch.rightPointer &&
+      index == BinarySearch.leftPointer &&
+      index == (resultValue)) {
+    return "LR ";
   }
   //leave as is to only display L,M,R pointers,whatever character is passed here will be displayed
   //at each index where condition isnt met above.
