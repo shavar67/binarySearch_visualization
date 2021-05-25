@@ -10,42 +10,18 @@ class Visualizer extends StatefulWidget {
 
 class _VisualizerState extends State<Visualizer> {
   BinarySearch _binarySearch = BinarySearch();
-  List<num> numArray = [
-    0,
-    1,
-    5,
-    6,
-    9,
-    10,
-    15,
-    18,
-    19,
-    21,
-    25,
-    29,
-    33,
-    45,
-    56,
-    67,
-    72,
-    75,
-    87,
-    91,
-    93,
-    98,
-    99,
-    100,
-  ];
+
   int binarySearchResult = 0;
   Random randomGenerator = Random();
   int tempRanNum = 0;
+  Set<int> arraySet = Set.from(List.generate(30, (index) => -1));
 
   @override
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     int left = 0;
-    int right = numArray.length - 1;
+    int right = arraySet.length - 1;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -63,15 +39,17 @@ class _VisualizerState extends State<Visualizer> {
             ),
           ),
           leading: Text(
-            'Searching for: $tempRanNum',
+            binarySearchResult == -1
+                ? 'invalid number'
+                : '$tempRanNum was found',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
           ),
         ),
         Container(
-          height: size.height * 0.35,
+          height: size.height * 0.40,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
-            itemCount: numArray.length != null ? numArray.length : 0,
+            itemCount: arraySet.length != null ? arraySet.length : 0,
             itemBuilder: (context, index) {
               return Padding(
                 padding: index == binarySearchResult
@@ -108,7 +86,7 @@ class _VisualizerState extends State<Visualizer> {
                                   : BorderRadius.circular(0)),
                           child: Center(
                               child: Text(
-                            '${numArray[index]}',
+                            '${arraySet.elementAt(index)}',
                             style: TextStyle(
                                 color:
                                     changeTextColor(index, binarySearchResult),
@@ -151,25 +129,72 @@ class _VisualizerState extends State<Visualizer> {
           ),
         ),
         SizedBox(height: 20),
-        InkWell(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Start',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Search',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
                 ),
+                onTap: () {
+                  setState(() {
+                    tempRanNum = randomGenerator.nextInt(100);
+                    binarySearchResult = _binarySearch.binarySearch(
+                        arraySet.toList(), tempRanNum, left, right);
+                  });
+                }),
+            InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Generate Array',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    arraySet = Set.from(List.generate(
+                        30, (index) => randomGenerator.nextInt(100)).toList()
+                      ..sort());
+                  });
+                }),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  binarySearchResult = -1;
+                  BinarySearch.leftPointer = -1;
+                  BinarySearch.rightPointer = -1;
+                  arraySet.clear();
+                });
+              },
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Reset',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.blue, borderRadius: BorderRadius.circular(8)),
               ),
-            ),
-            onTap: () {
-              setState(() {
-                tempRanNum = randomGenerator.nextInt(101);
-                binarySearchResult = _binarySearch.binarySearch(
-                    numArray, tempRanNum, left, right);
-              });
-            }),
+            )
+          ],
+        ),
       ],
     );
   }
@@ -210,8 +235,10 @@ String switchPointer(int index, int resultValue) {
   } else if (index == BinarySearch.rightPointer &&
       index == BinarySearch.leftPointer &&
       index == (resultValue)) {
+    //return LR when all the L, R , M pointers are the same.
     return "LR ";
   }
+
   //leave as is to only display L,M,R pointers,whatever character is passed here will be displayed
   //at each index where condition isnt met above.
   return '';

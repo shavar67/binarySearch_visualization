@@ -8,12 +8,10 @@ class BinarySearch {
     }
     int mid = (left + right) ~/ 2;
     int match = array[mid];
-
     if (target == match) {
       leftPointer = left;
       rightPointer = right;
       print('found at index: $mid');
-
       return mid;
     } else if (target < match) {
       rightPointer = mid - 1;
