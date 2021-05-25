@@ -73,7 +73,7 @@ class _VisualizerState extends State<Visualizer> {
                         AnimatedContainer(
                           width: size.width * 0.10,
                           height: size.height * 0.04,
-                          duration: Duration(milliseconds: 300),
+                          duration: Duration(milliseconds: 1000),
                           decoration: BoxDecoration(
                               border: index == binarySearchResult
                                   ? Border.all(color: Colors.white, width: 3)
