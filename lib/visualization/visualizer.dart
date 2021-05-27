@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:visualization/binarySearch.dart';
+import 'package:visualization/algorithm/binarySearch.dart';
+import 'package:visualization/visualization/gridList.dart';
+import 'package:visualization/visualization/inkWellWidget.dart';
 
 class Visualizer extends StatefulWidget {
   @override
@@ -10,13 +12,11 @@ class Visualizer extends StatefulWidget {
 
 class _VisualizerState extends State<Visualizer> {
   BinarySearch _binarySearch = BinarySearch();
-
   int binarySearchResult = 0;
   Random randomGenerator = Random();
   int tempRanNum = 0;
   Set<int> arraySet = Set.from(List.generate(30, (index) => -1));
 
-  @override
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -40,74 +40,17 @@ class _VisualizerState extends State<Visualizer> {
           ),
           leading: Text(
             binarySearchResult == -1
-                ? 'Invalid number'
+                ? 'Searching for: $tempRanNum'
                 : '$tempRanNum was found',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
           ),
         ),
         Container(
           height: size.height * 0.40,
-          child: GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: arraySet.length != null ? arraySet.length : 0,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: index == binarySearchResult
-                    ? const EdgeInsets.all(0)
-                    : const EdgeInsets.all(6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      switchPointer(index, binarySearchResult),
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: switchPointerColor(index, binarySearchResult)),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        AnimatedContainer(
-                          width: size.width * 0.10,
-                          height: size.height * 0.04,
-                          duration: Duration(milliseconds: 1000),
-                          decoration: BoxDecoration(
-                              border: index == binarySearchResult
-                                  ? Border.all(color: Colors.white, width: 3)
-                                  : Border.all(
-                                      width: 0, color: Colors.transparent),
-                              color:
-                                  switchDefaultColor(index, binarySearchResult),
-                              borderRadius: index == binarySearchResult
-                                  ? BorderRadius.circular(8)
-                                  : BorderRadius.circular(0)),
-                          child: Center(
-                              child: Text(
-                            '${arraySet.elementAt(index)}',
-                            style: TextStyle(
-                                color:
-                                    changeTextColor(index, binarySearchResult),
-                                fontSize:
-                                    index == binarySearchResult ? 14 : 10),
-                          )),
-                        ),
-                        Text('$index',
-                            style: TextStyle(
-                                color: index == binarySearchResult
-                                    ? Colors.black
-                                    : Colors.white))
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 6),
-          ),
+          child: GridListBuilder(
+              arraySet: arraySet,
+              binarySearchResult: binarySearchResult,
+              size: size),
         ),
         SizedBox(height: 10),
         Padding(
@@ -123,7 +66,7 @@ class _VisualizerState extends State<Visualizer> {
               Text(
                   'MidPoint: ${(BinarySearch.leftPointer + BinarySearch.rightPointer) ~/ 2}\n',
                   style: TextStyle(fontSize: 16)),
-              Text('Return -1 if L > R, value not found.',
+              Text('Return -1 if L > R : value not found.',
                   style: TextStyle(fontSize: 16)),
             ]),
           ),
@@ -132,7 +75,7 @@ class _VisualizerState extends State<Visualizer> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            buildInkWell(
+            InkWellWidget(
                 text: 'Search',
                 onTap: () {
                   setState(() {
@@ -141,7 +84,7 @@ class _VisualizerState extends State<Visualizer> {
                         arraySet.toList(), tempRanNum, left, right);
                   });
                 }),
-            buildInkWell(
+            InkWellWidget(
                 text: 'Generate Array',
                 onTap: () {
                   setState(() {
@@ -150,37 +93,21 @@ class _VisualizerState extends State<Visualizer> {
                       ..sort());
                   });
                 }),
-            buildInkWell(
-              text: 'Reset',
-              onTap: () {
-                setState(() {
-                  binarySearchResult = -1;
-                  BinarySearch.leftPointer = -1;
-                  BinarySearch.rightPointer = -1;
-                  arraySet.clear();
-                });
-              },
-            ),
+            InkWellWidget(
+                text: 'Reset',
+                onTap: () {
+                  setState(() {
+                    tempRanNum = -1;
+                    binarySearchResult = -1;
+                    BinarySearch.leftPointer = -1;
+                    BinarySearch.rightPointer = -1;
+                    arraySet.clear();
+                  });
+                }),
           ],
         ),
       ],
     );
-  }
-
-  InkWell buildInkWell({@required String text, @required Function onTap}) {
-    return InkWell(
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.blue, borderRadius: BorderRadius.circular(8)),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ),
-        ),
-        onTap: onTap);
   }
 }
 
