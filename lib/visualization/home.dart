@@ -11,7 +11,10 @@ class Home extends StatelessWidget {
           "Binary Search Visualizer",
         ),
       ),
-      body: Container(decoration: BoxDecoration(), child: Visualizer()),
+      body: Container(
+        decoration: BoxDecoration(),
+        child: Visualizer(),
+      ),
     );
   }
 }
