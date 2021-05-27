@@ -40,7 +40,7 @@ class _VisualizerState extends State<Visualizer> {
           ),
           leading: Text(
             binarySearchResult == -1
-                ? 'invalid number'
+                ? 'Invalid number'
                 : '$tempRanNum was found',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
           ),
@@ -132,19 +132,8 @@ class _VisualizerState extends State<Visualizer> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Search',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                ),
+            buildInkWell(
+                text: 'Search',
                 onTap: () {
                   setState(() {
                     tempRanNum = randomGenerator.nextInt(100);
@@ -152,19 +141,8 @@ class _VisualizerState extends State<Visualizer> {
                         arraySet.toList(), tempRanNum, left, right);
                   });
                 }),
-            InkWell(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Generate Array',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                ),
+            buildInkWell(
+                text: 'Generate Array',
                 onTap: () {
                   setState(() {
                     arraySet = Set.from(List.generate(
@@ -172,7 +150,8 @@ class _VisualizerState extends State<Visualizer> {
                       ..sort());
                   });
                 }),
-            InkWell(
+            buildInkWell(
+              text: 'Reset',
               onTap: () {
                 setState(() {
                   binarySearchResult = -1;
@@ -181,22 +160,27 @@ class _VisualizerState extends State<Visualizer> {
                   arraySet.clear();
                 });
               },
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Reset',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                decoration: BoxDecoration(
-                    color: Colors.blue, borderRadius: BorderRadius.circular(8)),
-              ),
-            )
+            ),
           ],
         ),
       ],
     );
+  }
+
+  InkWell buildInkWell({@required String text, @required Function onTap}) {
+    return InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.blue, borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              text,
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+        onTap: onTap);
   }
 }
 
