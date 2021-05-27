@@ -97,7 +97,7 @@ class _VisualizerState extends State<Visualizer> {
                 text: 'Reset',
                 onTap: () {
                   setState(() {
-                    tempRanNum = -1;
+                    tempRanNum = 0;
                     binarySearchResult = -1;
                     BinarySearch.leftPointer = -1;
                     BinarySearch.rightPointer = -1;
