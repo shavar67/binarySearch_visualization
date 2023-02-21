@@ -3,11 +3,10 @@ import 'package:visualization/visualization/visualizer.dart';
 
 class GridListBuilder extends StatelessWidget {
   const GridListBuilder({
-    Key key,
-    @required this.arraySet,
-    @required this.binarySearchResult,
-    @required this.size,
-  }) : super(key: key);
+    required this.arraySet,
+    required this.binarySearchResult,
+    required this.size,
+  }) : super();
 
   final Set<int> arraySet;
   final int binarySearchResult;

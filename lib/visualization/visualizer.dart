@@ -12,10 +12,23 @@ class Visualizer extends StatefulWidget {
 
 class _VisualizerState extends State<Visualizer> {
   BinarySearch _binarySearch = BinarySearch();
-  int binarySearchResult = 0;
+  int binarySearchResult = -1;
   Random randomGenerator = Random();
   int tempRanNum = 0;
   Set<int> arraySet = Set.from(List.generate(30, (index) => -1));
+
+  @override
+  void initState() {
+    binarySearchResult = -1;
+    arraySet = Set.from(
+        List.generate(30, (index) => randomGenerator.nextInt(100)).toList()
+          ..sort());
+
+    // tempRanNum = randomGenerator.nextInt(100);
+    // binarySearchResult = _binarySearch.binarySearch(
+    //     arraySet.toList(), tempRanNum, 0, arraySet.length - 1);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +36,19 @@ class _VisualizerState extends State<Visualizer> {
     int left = 0;
     int right = arraySet.length - 1;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        actions: [
+          IconButton(
+            tooltip: 'enter custom search values',
+            icon: Icon(Icons.add),
+            onPressed: () {},
+          )
+        ],
+      ),
+      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         ListTile(
-          trailing: CircleAvatar(
-            radius: 24,
-            backgroundColor:
-                binarySearchResult == -1 ? Colors.blueGrey : Colors.amber,
-            child: Text(
-              '$binarySearchResult',
-              style: TextStyle(
-                  color:
-                      binarySearchResult == -1 ? Colors.white : Colors.black),
-            ),
-          ),
           leading: Text(
             binarySearchResult == -1
                 ? 'Searching for: $tempRanNum'
@@ -45,30 +56,17 @@ class _VisualizerState extends State<Visualizer> {
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
           ),
         ),
-        Container(
-          height: size.height * 0.40,
-          child: GridListBuilder(
-              arraySet: arraySet,
-              binarySearchResult: binarySearchResult,
-              size: size),
-        ),
-        SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Left Pointer: ${BinarySearch.leftPointer}\n',
-                  style: TextStyle(fontSize: 16)),
-              Text('Right Pointer: ${BinarySearch.rightPointer}\n',
-                  style: TextStyle(fontSize: 16)),
-              Text(
-                  'MidPoint: ${(BinarySearch.leftPointer + BinarySearch.rightPointer) ~/ 2}\n',
-                  style: TextStyle(fontSize: 16)),
-              Text('Return -1 if L > R : value not found.',
-                  style: TextStyle(fontSize: 16)),
-            ]),
+        Material(
+          elevation: 48,
+          shadowColor: Colors.grey,
+          child: AnimatedContainer(
+            curve: Curves.bounceIn,
+            duration: Duration(milliseconds: 250),
+            height: size.height * 0.40,
+            child: GridListBuilder(
+                arraySet: arraySet,
+                binarySearchResult: binarySearchResult,
+                size: size),
           ),
         ),
         SizedBox(height: 20),
@@ -106,7 +104,40 @@ class _VisualizerState extends State<Visualizer> {
                 }),
           ],
         ),
-      ],
+        SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Material(
+              elevation: 32,
+              shadowColor: Colors.purple,
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey.shade900),
+                width: size.width,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Left Pointer: ${BinarySearch.leftPointer}\n',
+                            style: TextStyle(fontSize: 16)),
+                        Text('Right Pointer: ${BinarySearch.rightPointer}\n',
+                            style: TextStyle(fontSize: 16)),
+                        Text(
+                            'MidPoint: ${(BinarySearch.leftPointer + BinarySearch.rightPointer) ~/ 2}\n',
+                            style: TextStyle(fontSize: 16)),
+                        Text('Return -1 if L > R : value not found.',
+                            style: TextStyle(fontSize: 16)),
+                      ]),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
@@ -135,19 +166,19 @@ String switchPointer(int index, int resultValue) {
     //doing so will only display the leftPointer[L] that is appropriate to (midPoint + 1).
     //otherwise if we compare it to the resultValue all numbers to the left will have a leftPointer[L].
 
-    return 'L ';
+    return 'L';
   } else if (index == BinarySearch.rightPointer && index != resultValue) {
     //our control point [index] is now compared to the rightPointer[R] in the BinarySearch class [mid - 1]
     //everything is the same as above, only this time we're checking for the rightPointer[R]
-    return 'R ';
+    return 'R';
   } else if (index == resultValue && index != BinarySearch.rightPointer) {
     //if the control point and resultValue are the same we've found our value
-    return 'M ';
+    return 'M';
   } else if (index == BinarySearch.rightPointer &&
       index == BinarySearch.leftPointer &&
       index == (resultValue)) {
-    //return LR when all the L, R , M pointers are the same.
-    return "LR ";
+    //return LMR when all the L, R , M pointers are the same.
+    return 'LR';
   }
 
   //leave as is to only display L,M,R pointers,whatever character is passed here will be displayed
@@ -156,20 +187,20 @@ String switchPointer(int index, int resultValue) {
 }
 
 //The following method is simply for customization for the pointer values,
-//refer to the comments above to understand the logic lines 190-209.
+
 Color switchPointerColor(int index, int resultValue) {
   if (index == BinarySearch.leftPointer) {
     return Colors.black;
   } else if (index == BinarySearch.rightPointer) {
     return Colors.red;
   } else if (index == resultValue) {
-    return Colors.green[800];
+    return Colors.green;
   }
   return Colors.purpleAccent;
 }
 
 //The following method is simply for customization for the container background color,
-//refer to the comments above to understand the logic lines 190-209.
+
 Color switchDefaultColor(int index, int resultValue) {
   if (resultValue == -1) {
     // if value we're searching for doesn't exist in our array.
